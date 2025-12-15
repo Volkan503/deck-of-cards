@@ -198,7 +198,75 @@
     </div>
   </div>
 
-  <!-- Optional: wire to your existing Script.js later -->
-  <!-- <script src="Script.js"></script> -->
+  <script src="Script.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      // create deck and players using your existing classes
+      var deck = new Deck();
+      deck.shuffle();
+
+      var p1 = new Player('Player 1');
+      var p2 = new Player('Player 2');
+      var p3 = new Player('Player 3');
+
+      var hands = {
+        1: document.getElementById('hand1'),
+        2: document.getElementById('hand2'),
+        3: document.getElementById('hand3')
+      };
+
+      function renderHand(player, handEl) {
+        handEl.innerHTML = '';
+
+        for (var i = 0; i < player.hand.length; i += 1) {
+          var raw = player.hand[i];           // e.g. "7 of Hearts"
+          var parts = raw.split(' of ');
+          var value = parts[0];
+          var suit = parts[1];
+
+          var cardDiv = document.createElement('div');
+          cardDiv.className = 'card';
+          cardDiv.innerHTML =
+            '<div class="value">' + value + '</div>' +
+            '<div class="suit">' + suit + '</div>';
+
+          handEl.appendChild(cardDiv);
+        }
+      }
+
+      document.getElementById('shuffleBtn').addEventListener('click', function () {
+        console.log('Shuffle button clicked');
+        deck = new Deck();
+        deck.shuffle();
+
+        // clear hands
+        p1.hand = [];
+        p2.hand = [];
+        p3.hand = [];
+
+        document.getElementById('hand1').innerHTML = '<div class="card placeholder">No cards yet</div>';
+        document.getElementById('hand2').innerHTML = '<div class="card placeholder">No cards yet</div>';
+        document.getElementById('hand3').innerHTML = '<div class="card placeholder">No cards yet</div>';
+
+        document.getElementById('deckInfo').textContent = 'Deck shuffled.';
+      });
+
+      document.getElementById('dealBtn').addEventListener('click', function () {
+        console.log('Deal button clicked');
+        // deal 3 cards each (if the deck still has enough cards)
+        for (var n = 0; n < 3; n += 1) {
+          p1.addToHand(deck);
+          p2.addToHand(deck);
+          p3.addToHand(deck);
+        }
+
+        renderHand(p1, hands[1]);
+        renderHand(p2, hands[2]);
+        renderHand(p3, hands[3]);
+
+        document.getElementById('deckInfo').textContent = 'Cards dealt from shuffled deck.';
+      });
+    });
+  </script>
 </body>
 </html>
